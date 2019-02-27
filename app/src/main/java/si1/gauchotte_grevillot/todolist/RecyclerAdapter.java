@@ -1,4 +1,4 @@
-package fr.loirotte.recytuto;
+package si1.gauchotte_grevillot.todolist;
 
 import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
@@ -10,8 +10,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-
-import fr.loirotte.recytuto.TodoItem;
 
 /**
  * Created by phil on 07/02/17.

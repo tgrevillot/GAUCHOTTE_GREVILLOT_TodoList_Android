@@ -1,4 +1,4 @@
-package fr.loirotte.recytuto;
+package si1.gauchotte_grevillot.todolist;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package fr.loirotte.recytuto;
+package si1.gauchotte_grevillot.todolist;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

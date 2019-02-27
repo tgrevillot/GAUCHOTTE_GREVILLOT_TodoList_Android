@@ -1,4 +1,4 @@
-package fr.loirotte.recytuto;
+package si1.gauchotte_grevillot.todolist;
 
 /**
  * Created by phil on 06/02/17.
