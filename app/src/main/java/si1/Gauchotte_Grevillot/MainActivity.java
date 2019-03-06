@@ -1,4 +1,4 @@
-package com.td2;
+package si1.Gauchotte_Grevillot;
 
 
 import android.arch.lifecycle.Observer;
@@ -11,6 +11,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.td2.R;
 
 import java.util.List;
 

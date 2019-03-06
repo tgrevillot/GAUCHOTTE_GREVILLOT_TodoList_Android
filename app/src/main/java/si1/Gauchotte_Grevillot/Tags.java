@@ -1,4 +1,4 @@
-package com.td2;
+package si1.Gauchotte_Grevillot;
 
 public class Tags {
 

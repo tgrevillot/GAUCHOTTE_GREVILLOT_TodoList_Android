@@ -1,4 +1,4 @@
-package com.td2;
+package si1.Gauchotte_Grevillot;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;

@@ -1,4 +1,4 @@
-package com.td2;
+package si1.Gauchotte_Grevillot;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
