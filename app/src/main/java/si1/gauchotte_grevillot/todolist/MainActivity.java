@@ -1,5 +1,7 @@
 package si1.gauchotte_grevillot.todolist;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("INIT", "Fin initialisation recycler");
     }
 
+    @SuppressLint("ResourceType")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -77,7 +80,9 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+
+            Intent dbmanager = new Intent(this, AndroidDatabaseManager.class);
+            startActivity(dbmanager);
         }
 
         return super.onOptionsItemSelected(item);
