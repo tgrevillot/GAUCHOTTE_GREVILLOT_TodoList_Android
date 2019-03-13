@@ -3,6 +3,8 @@ package si1.gauchotte_grevillot.todolist;
 //all required import files
 import java.util.ArrayList;
 import java.util.LinkedList;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -30,7 +32,7 @@ import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class AndroidDatabaseManager /*extends Activity implements OnItemClickListener*/ {
+public class AndroidDatabaseManager extends Activity implements OnItemClickListener {
 
     //a static class to save cursor,table values etc which is used by functions to share data in the program.
     static class indexInfo
@@ -52,7 +54,7 @@ public class AndroidDatabaseManager /*extends Activity implements OnItemClickLis
 
     //in the below line Change the text 'yourCustomSqlHelper' with your custom sqlitehelper class name.
     //Do not change the variable name dbm
-/*    TodoDbHelper dbm;
+    TodoDbHelper dbm;
     TableLayout tableLayout;
     TableRow.LayoutParams tableRowParams;
     HorizontalScrollView hsv;
@@ -214,7 +216,7 @@ public class AndroidDatabaseManager /*extends Activity implements OnItemClickLis
                 String Query10=customquerytext.getText().toString();
                 Log.d("query",Query10);
                 //pass the query to getdata method and get results
-                alc2 = dbm.getItem(Query10);
+                alc2 = dbm.getData(Query10);
                 final Cursor c4=alc2.get(0);
                 Cursor Message2 =alc2.get(1);
                 Message2.moveToLast();
@@ -401,6 +403,7 @@ public class AndroidDatabaseManager /*extends Activity implements OnItemClickLis
                         //the spinnertable has the 3 items to drop , delete , add row to the table selected by the user
                         //here we handle the 3 operations.
                         spinnertable.setOnItemSelectedListener((new AdapterView.OnItemSelectedListener() {
+                            @SuppressLint("ResourceType")
                             @Override
                             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
@@ -756,6 +759,7 @@ public class AndroidDatabaseManager /*extends Activity implements OnItemClickLis
 
     }
     //displays alert dialog from which use can update or delete a row
+    @SuppressLint("ResourceType")
     public void updateDeletePopup(int row)
     {
         Cursor c2=indexInfo.maincursor;
@@ -1286,5 +1290,4 @@ public class AndroidDatabaseManager /*extends Activity implements OnItemClickLis
         // TODO Auto-generated method stub
 
     }
-*/
 }
