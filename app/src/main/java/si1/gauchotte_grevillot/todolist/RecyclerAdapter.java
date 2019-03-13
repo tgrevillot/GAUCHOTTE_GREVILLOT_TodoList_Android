@@ -1,6 +1,7 @@
 package si1.gauchotte_grevillot.todolist;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,9 +31,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
     }
 
     @Override
-    public void onBindViewHolder(TodoHolder holder, int position) {
-        TodoItem it = items.get(position);
-        holder.bindTodo(it);
+    public void onBindViewHolder(TodoHolder holder, int i) {
+        TodoItem item = items.get(i);
+        int c = Color.BLACK;
+
+        if(item.getTag().equals("faible"))
+            c = Color.GREEN;
+        else if(item.getTag().equals("moyen"))
+            c = Color.YELLOW;
+        else if(item.getTag().equals("important"))
+            c = Color.RED;
+
+        holder.image.setBackgroundColor(c);
+        holder.label.setText(item.getLabel());
+        holder.sw.setChecked(item.isDone());
     }
 
     @Override

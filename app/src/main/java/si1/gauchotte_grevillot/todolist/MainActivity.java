@@ -1,5 +1,6 @@
 package si1.gauchotte_grevillot.todolist;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,11 +13,15 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TodoDbHelper tdh;
     private ArrayList<TodoItem> items;
     private RecyclerView recycler;
     private LinearLayoutManager manager;
@@ -26,6 +31,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        this.tdh = new TodoDbHelper(this);
+
+        tdh.insertData("Tache1", "faible", "o");
+        tdh.insertData("Tache2", "moyen", "o");
+        tdh.insertData("Tache3", "important", "n");
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -59,6 +71,12 @@ public class MainActivity extends AppCompatActivity {
 
         setRecyclerViewItemTouchListener();
         Log.i("INIT", "Fin initialisation recycler");
+    }
+
+    public void viewAll() {
+        Switch sw = this.findViewById(R.id.switch1);
+        ImageView imV = this.findViewById(R.id.imageView);
+        @SuppressLint("CutPasteId") TextView tv = this.findViewById(R.id.imageView);
     }
 
     @Override

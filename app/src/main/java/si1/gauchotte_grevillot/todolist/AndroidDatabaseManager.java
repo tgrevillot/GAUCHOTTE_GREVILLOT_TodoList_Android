@@ -30,7 +30,7 @@ import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class AndroidDatabaseManager extends Activity implements OnItemClickListener {
+public class AndroidDatabaseManager /*extends Activity implements OnItemClickListener*/ {
 
     //a static class to save cursor,table values etc which is used by functions to share data in the program.
     static class indexInfo
@@ -52,7 +52,7 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
 
     //in the below line Change the text 'yourCustomSqlHelper' with your custom sqlitehelper class name.
     //Do not change the variable name dbm
-    TodoDbHelper dbm;
+/*    TodoDbHelper dbm;
     TableLayout tableLayout;
     TableRow.LayoutParams tableRowParams;
     HorizontalScrollView hsv;
@@ -1286,5 +1286,5 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
         // TODO Auto-generated method stub
 
     }
-
+*/
 }

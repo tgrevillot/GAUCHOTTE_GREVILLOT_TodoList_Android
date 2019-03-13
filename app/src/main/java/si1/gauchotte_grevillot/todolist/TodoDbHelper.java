@@ -15,7 +15,6 @@ import java.util.ArrayList;
 public class TodoDbHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "todo.db";
-
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + TodoContract.TodoEntry.TABLE_NAME + " (" +
                     TodoContract.TodoEntry._ID + " INTEGER PRIMARY KEY," +
@@ -35,6 +34,8 @@ public class TodoDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         // Rien pour le moment
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TodoContract.TodoEntry.TABLE_NAME);
+        onCreate(sqLiteDatabase);
     }
 
     static ArrayList<TodoItem> getItems(Context context) {
@@ -77,6 +78,23 @@ public class TodoDbHelper extends SQLiteOpenHelper {
 
         // Retourne le résultat
         return items;
+    }
+
+    public boolean insertData(String label, String tag, String done) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentVal = new ContentValues();
+        contentVal.put(TodoContract.TodoEntry.COLUMN_NAME_LABEL, label);
+        contentVal.put(TodoContract.TodoEntry.COLUMN_NAME_TAG, tag);
+        contentVal.put(TodoContract.TodoEntry.COLUMN_NAME_DONE, done);
+
+        long result = db.insert(TodoContract.TodoEntry.TABLE_NAME, null, contentVal);
+        return result == -1;
+    }
+
+    public Cursor getData() {
+        SQLiteDatabase sql = this.getWritableDatabase();
+        Cursor result =  sql.rawQuery("SELECT * FROM " + TodoContract.TodoEntry.TABLE_NAME, null);
+        return result;
     }
 
     static void addItem(TodoItem item, Context context) {
