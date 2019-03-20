@@ -1,5 +1,9 @@
 package si1.gauchotte_grevillot.todolist;
 
+import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -7,35 +11,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.TimePicker;
+
+import java.util.Calendar;
 
 public class AddActivity extends AppCompatActivity {
-        private DatePicker date;
-        private Button bValide, bRetour;
-        private int anneeC, moisC, jourC, age = 0, annee = 0, jour = 0, mois = 0;
-        private String nom;
-        private boolean sexe;
+        private Button bValide, bRetour, date, time;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
 
-        //setContentView(R.layout.calendrier);
-
         bValide = (Button) findViewById(R.id.valide);
         bRetour = (Button) findViewById(R.id.retour);
-        //date = (DatePicker) findViewById(R.id.calendrierTache);
+        date = (Button) findViewById(R.id.btn_date);
+        time = (Button) findViewById(R.id.btn_time);
 
-        //anneeC = date.getYear();
-        //moisC = date.getMonth();
-        //jourC = date.getDayOfMonth();
-
-        /*if(annee != 0){
-            date.updateDate(annee, mois, jour);
-        }*/
+        date.setOnClickListener(new date_timeListener(this));
+        time.setOnClickListener(new date_timeListener(this));
 
         bRetour.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -75,11 +73,66 @@ public class AddActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+}
 
-        /*date.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                setContentView(R.layout.calendrier);
-            }
-        });*/
+
+class date_timeListener implements View.OnClickListener{
+
+    Activity act;
+    EditText txtDate, txtTime;
+    private int mYear, mMonth, mDay, mHour, mMinute;
+
+    public date_timeListener(Activity a){
+        act = a;
+    }
+
+    @Override
+    public void onClick(View v) {
+
+
+        if (v.getId() == R.id.btn_date) {
+
+            // Get Current Date
+            final Calendar c = Calendar.getInstance();
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH);
+            mDay = c.get(Calendar.DAY_OF_MONTH);
+            txtDate = act.findViewById(R.id.date);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(),
+                    new DatePickerDialog.OnDateSetListener() {
+
+                        @Override
+                        public void onDateSet(DatePicker view, int year,
+                                              int monthOfYear, int dayOfMonth) {
+
+                            txtDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+
+                        }
+                    }, mYear, mMonth, mDay);
+            datePickerDialog.show();
+        }
+        if (v.getId() == R.id.btn_time) {
+
+            // Get Current Time
+            final Calendar c = Calendar.getInstance();
+            mHour = c.get(Calendar.HOUR_OF_DAY);
+            mMinute = c.get(Calendar.MINUTE);
+            txtTime = act.findViewById(R.id.time);
+
+            // Launch Time Picker Dialog
+            TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(),
+                    new TimePickerDialog.OnTimeSetListener() {
+
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay,
+                                              int minute) {
+
+                            txtTime.setText(hourOfDay + ":" + minute);
+                        }
+                    }, mHour, mMinute, false);
+            timePickerDialog.show();
+        }
     }
 }
