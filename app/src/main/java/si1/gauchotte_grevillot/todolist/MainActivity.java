@@ -37,10 +37,6 @@ public class MainActivity extends AppCompatActivity {
 
         this.tdh = new TodoDbHelper(this);
 
-        tdh.insertData("Tache1", "faible", "o");
-        tdh.insertData("Tache2", "moyen", "o");
-        tdh.insertData("Tache3", "important", "n");
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -50,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getBaseContext(), AddActivity.class);
                 startActivityForResult(intent, 0);
+                finish();
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
             }

@@ -2,6 +2,7 @@ package si1.gauchotte_grevillot.todolist;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +42,7 @@ public class AddActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(getBaseContext(), MainActivity.class);
                 startActivityForResult(intent, 0);
+                finish();
             }
         });
 
@@ -49,21 +51,28 @@ public class AddActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 String nomTache = ((TextView) findViewById(R.id.nomTache)).getText().toString();
-                int item = ((RadioGroup) findViewById(R.id.importanceGroup)).getCheckedRadioButtonId();
-                TodoItem.Tags tag = TodoItem.Tags.Normal;
 
-                if(item == R.id.radioImp1)
-                    tag = TodoItem.Tags.Faible;
-                else if(item == R.id.radioImp2)
-                    tag = TodoItem.Tags.Normal;
-                else
-                    tag = TodoItem.Tags.Important;
+                if(nomTache.isEmpty()){
+                    Snackbar.make(v, "Vous devez entrer un nom de tâche !", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                } else{
+                    int item = ((RadioGroup) findViewById(R.id.importanceGroup)).getCheckedRadioButtonId();
+                    TodoItem.Tags tag = TodoItem.Tags.Normal;
 
-                TodoItem todoItem = new TodoItem(tag, nomTache);
-                TodoDbHelper.addItem(todoItem, getBaseContext());
+                    if(item == R.id.radioImp1)
+                        tag = TodoItem.Tags.Faible;
+                    else if(item == R.id.radioImp2)
+                        tag = TodoItem.Tags.Normal;
+                    else
+                        tag = TodoItem.Tags.Important;
 
-                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                startActivityForResult(intent, 0);
+                    TodoItem todoItem = new TodoItem(tag, nomTache);
+                    TodoDbHelper.addItem(todoItem, getBaseContext());
+
+                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                    startActivityForResult(intent, 0);
+                    finish();
+                }
             }
         });
 

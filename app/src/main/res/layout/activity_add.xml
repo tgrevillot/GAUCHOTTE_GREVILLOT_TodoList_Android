@@ -14,7 +14,7 @@
     tools:showIn="@layout/activity_add">
 
     <RelativeLayout
-        android:id="@+id/bloc"
+        android:id="@+id/blocTache"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -36,10 +36,8 @@
             android:id="@+id/importanceView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:layout_alignParentRight="true"
-            android:text="Priorité de votre de tâche :" />
-        <!--android:layout_toRightOf="@id/nomView"-->
+            android:text="Priorité de votre tâche :" />
 
         <RadioGroup
             android:layout_width="wrap_content"
@@ -73,36 +71,71 @@
         </RadioGroup>
     </RelativeLayout>
 
-
-    <TextView
-        android:id="@+id/calendrierView"
+    <RelativeLayout
+        android:id="@+id/blocDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/bloc"
-        android:text="Priorité de votre de tâche :" />
+        android:layout_below="@+id/blocTache">
+
+        <TextView
+            android:id="@+id/calendrierView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="Date d'échéance de votre tâche :" />
 
 
-    <DatePicker
-        android:id="@+id/calendrierTache"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/calendrierView"
-        android:layout_gravity="center"
-        android:layout_marginTop="15dp" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/date"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choisir une date"
+            android:id="@+id/btn_date"
+            android:layout_alignBottom="@+id/date"
+            android:layout_toRightOf="@+id/date"
+            android:layout_toEndOf="@+id/date" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/time"
+            android:layout_below="@+id/date"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choisir une heure"
+            android:id="@+id/btn_time"
+            android:layout_below="@+id/btn_date"
+            android:layout_alignLeft="@+id/btn_date"
+            android:layout_alignStart="@+id/btn_date" />
+
+    </RelativeLayout>
+
 
     <Button
         android:id="@+id/retour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/calendrierTache"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/blocDate"
         android:text="Retour" />
 
     <Button
         android:id="@+id/valide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/calendrierTache"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/blocDate"
         android:text="Créer la tâche" />
 
 
