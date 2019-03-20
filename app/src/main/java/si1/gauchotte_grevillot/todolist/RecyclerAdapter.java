@@ -42,11 +42,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
         TodoItem item = items.get(i);
         int c = Color.BLACK;
 
-        if(item.getTag().equals("faible"))
+        if(item.getTag().equals(TodoItem.Tags.Faible))
             c = Color.GREEN;
-        else if(item.getTag().equals("moyen"))
+        else if(item.getTag().equals(TodoItem.Tags.Normal))
             c = Color.YELLOW;
-        else if(item.getTag().equals("important"))
+        else if(item.getTag().equals(TodoItem.Tags.Important))
             c = Color.RED;
 
         holder.image.setBackgroundColor(c);
