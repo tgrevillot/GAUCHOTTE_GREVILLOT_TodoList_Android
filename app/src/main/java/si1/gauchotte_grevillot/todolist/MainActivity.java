@@ -23,6 +23,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private TodoDbHelper tdh;
+    private Bundle bundle;
     private ArrayList<TodoItem> items;
     private RecyclerView recycler;
     private LinearLayoutManager manager;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.bundle = savedInstanceState;
         setContentView(R.layout.activity_main);
 
         this.tdh = new TodoDbHelper(this);
@@ -97,10 +99,14 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-
-            Intent dbmanager = new Intent(this, AndroidDatabaseManager.class);
-            startActivity(dbmanager);
+        switch(id) {
+            case R.id.action_settings:
+                Intent dbmanager = new Intent(this, AndroidDatabaseManager.class);
+                startActivity(dbmanager);
+                break;
+            case R.id.action_clearDB:
+                this.tdh.clearDatabase();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
