@@ -51,6 +51,53 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         TodoDbHelper tdh = new TodoDbHelper(context);
         SQLiteDatabase sql = tdh.getReadableDatabase();
         sql.execSQL("DELETE FROM items WHERE label like '" + label + "'");
+        tdh.close();
+    }
+
+    static ArrayList<TodoItem> getItem(Context context, String label){
+        TodoDbHelper tdh = new TodoDbHelper(context);
+        SQLiteDatabase sql = tdh.getReadableDatabase();
+
+        // Création de la projection souhaitée
+        String[] projection = {
+                TodoContract.TodoEntry.COLUMN_NAME_LABEL,
+                TodoContract.TodoEntry.COLUMN_NAME_TAG,
+                TodoContract.TodoEntry.COLUMN_NAME_DONE
+        };
+
+        String condition = "label like '" + label + "'";
+
+        Cursor cursor = sql.query(
+                TodoContract.TodoEntry.TABLE_NAME,
+                projection,
+                condition,
+                null,
+                null,
+                null,
+                null
+        );//"SELECT label FROM items WHERE label like '" + label + "'");
+
+        ArrayList<TodoItem> items = new ArrayList<TodoItem>();
+
+        while (cursor.moveToNext()) {
+            String l = cursor.getString(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_LABEL));
+            TodoItem.Tags tag = TodoItem.getTagFor(cursor.getString(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_TAG)));
+            boolean done = (cursor.getInt(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_DONE)) == 1);
+            TodoItem item = new TodoItem(l, tag, done);
+            items.add(item);
+        }
+
+        // Ménage
+        tdh.close();
+
+        // Retourne le résultat
+        return items;
+    }
+
+    static boolean isIntTable(Context context, String label){
+        ArrayList<TodoItem> items = getItem(context, label);
+
+        return (items.size() != 0);
     }
 
     static ArrayList<TodoItem> getItems(Context context) {
