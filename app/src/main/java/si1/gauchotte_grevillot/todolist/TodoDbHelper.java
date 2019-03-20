@@ -41,6 +41,12 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
+    public static void removeItem(Context context, TodoItem ti) {
+        TodoDbHelper tdh = new TodoDbHelper(context);
+        SQLiteDatabase sql = tdh.getWritableDatabase();
+        sql.execSQL("DELETE FROM items WHERE label = " + ti.getLabel());
+    }
+
     static ArrayList<TodoItem> getItems(Context context) {
         TodoDbHelper dbHelper = new TodoDbHelper(context);
 
