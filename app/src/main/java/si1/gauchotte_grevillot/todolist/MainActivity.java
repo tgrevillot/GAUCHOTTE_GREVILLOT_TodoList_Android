@@ -106,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.action_clearDB:
                 this.tdh.clearDatabase();
+                this.items.clear();
+                this.adapter.notifyDataSetChanged();
                 break;
         }
 

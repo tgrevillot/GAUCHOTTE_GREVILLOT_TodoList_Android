@@ -83,11 +83,9 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         return items;
     }
 
-    public boolean clearDatabase() {
-        boolean verif = true;
+    public void clearDatabase() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM items");
-        return verif;
     }
 
     public boolean insertData(String label, String tag, String done) {
