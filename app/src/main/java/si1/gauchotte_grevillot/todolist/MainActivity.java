@@ -15,15 +15,16 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private TodoDbHelper tdh;
-    private Bundle bundle;
     private ArrayList<TodoItem> items;
     private RecyclerView recycler;
     private LinearLayoutManager manager;
@@ -32,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.bundle = savedInstanceState;
         setContentView(R.layout.activity_main);
 
         this.tdh = new TodoDbHelper(this);
@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
         Log.i("INIT", "Fin initialisation composantes");
 
         // Test d'ajout d'un item
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         recycler.setAdapter(adapter);
 
         setRecyclerViewItemTouchListener();
+
         Log.i("INIT", "Fin initialisation recycler");
     }
 

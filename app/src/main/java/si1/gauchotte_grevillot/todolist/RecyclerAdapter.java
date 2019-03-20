@@ -1,14 +1,19 @@
 package si1.gauchotte_grevillot.todolist;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -62,10 +67,33 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
         public TodoHolder(View itemView) {
             super(itemView);
 
-            image = (ImageView) itemView.findViewById(R.id.imageView);
-            sw = (Switch) itemView.findViewById(R.id.switch1);
-            label = (TextView) itemView.findViewById(R.id.textView);
+            image = itemView.findViewById(R.id.imageView);
+            sw = itemView.findViewById(R.id.switch1);
+            label = itemView.findViewById(R.id.textView);
             resources = itemView.getResources();
+
+
+            //Affectation du listener sur les différentes row
+            LinearLayout rowItem = itemView.findViewById(R.id.itemLigne);
+            rowItem.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(final View v) {
+                    new AlertDialog.Builder(v.getContext())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setMessage("Êtes-vous sûr de vouloir supprimer cet item ?")
+                            .setTitle("Suppression d'item")
+                            .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    TodoDbHelper.removeItem(v.getContext(), item);
+                                }
+                            })
+                            .setNegativeButton("Non", null)
+                            .show();
+
+                    return true;
+                }
+            });
         }
 
         public void bindTodo(TodoItem todo) {
