@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="si1.gauchotte_grevillot.todolist.AddActivity"
+    tools:showIn="@layout/activity_add">
+
+    <RelativeLayout
+        android:id="@+id/bloc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/nomView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nom de la tâche :" />
+
+        <EditText
+            android:id="@+id/nomTache"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Entrez le nom de la tâche"
+            android:layout_below="@id/nomView"
+            android:textSize="10dp"/>
+
+        <TextView
+            android:id="@+id/importanceView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentRight="true"
+            android:text="Priorité de votre de tâche :" />
+        <!--android:layout_toRightOf="@id/nomView"-->
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/importanceGroup"
+            android:layout_below="@+id/importanceView"
+            android:layout_toRightOf="@id/nomTache"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/radioImp1"
+                android:text="Faible"
+                android:textSize="10dp"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/radioImp2"
+                android:checked="true"
+                android:text="Moyen"
+                android:textSize="10dp"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/radioImp3"
+                android:text="Important"
+                android:textSize="10dp"/>
+
+        </RadioGroup>
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/calendrierView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/bloc"
+        android:text="Priorité de votre de tâche :" />
+
+
+    <DatePicker
+        android:id="@+id/calendrierTache"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/calendrierView"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp" />
+
+    <Button
+        android:id="@+id/retour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/calendrierTache"
+        android:text="Retour" />
+
+    <Button
+        android:id="@+id/valide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/calendrierTache"
+        android:text="Créer la tâche" />
+
+
+</RelativeLayout>
