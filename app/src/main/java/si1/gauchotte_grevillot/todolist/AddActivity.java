@@ -27,15 +27,15 @@ public class AddActivity extends AppCompatActivity {
 
         bValide = (Button) findViewById(R.id.valide);
         bRetour = (Button) findViewById(R.id.retour);
-        date = (DatePicker) findViewById(R.id.calendrierTache);
+        //date = (DatePicker) findViewById(R.id.calendrierTache);
 
-        anneeC = date.getYear();
-        moisC = date.getMonth();
-        jourC = date.getDayOfMonth();
+        //anneeC = date.getYear();
+        //moisC = date.getMonth();
+        //jourC = date.getDayOfMonth();
 
-        if(annee != 0){
+        /*if(annee != 0){
             date.updateDate(annee, mois, jour);
-        }
+        }*/
 
         bRetour.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

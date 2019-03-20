@@ -1,7 +1,9 @@
 package si1.gauchotte_grevillot.todolist;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v7.view.menu.MenuView;
@@ -24,15 +26,17 @@ import java.util.ArrayList;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHolder> {
 
     private ArrayList<TodoItem> items;
+    private Activity activity;
 
-    public RecyclerAdapter(ArrayList<TodoItem> items) {
+    public RecyclerAdapter(ArrayList<TodoItem> items, Activity act) {
         this.items = items;
+        activity = act;
     }
 
     @Override
     public TodoHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View inflatedView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
-        return new TodoHolder(inflatedView);
+        return new TodoHolder(inflatedView, activity);
     }
 
     @Override
@@ -58,20 +62,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
     }
 
     public static class TodoHolder extends RecyclerView.ViewHolder {
+        private Activity act;
         private Resources resources;
         private ImageView image;
         private Switch sw;
         private TextView label;
         private TodoItem item;
 
-        public TodoHolder(View itemView) {
+        public TodoHolder(View itemView, Activity a) {
             super(itemView);
 
+            act = a;
             image = itemView.findViewById(R.id.imageView);
             sw = itemView.findViewById(R.id.switch1);
             label = itemView.findViewById(R.id.textView);
             resources = itemView.getResources();
-
 
             //Affectation du listener sur les différentes row
             LinearLayout rowItem = itemView.findViewById(R.id.itemLigne);
@@ -85,7 +90,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
                             .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    TodoDbHelper.removeItem(v.getContext(), item);
+                                    TodoDbHelper.removeItem(act.getBaseContext(), label.getText().toString());
+                                    Intent intent = new Intent(v.getContext(), MainActivity.class);
+                                    act.startActivityForResult(intent, 0);
+                                    act.finish();
                                 }
                             })
                             .setNegativeButton("Non", null)

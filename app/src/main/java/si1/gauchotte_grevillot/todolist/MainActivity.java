@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         manager = new LinearLayoutManager(this);
         recycler.setLayoutManager(manager);
 
-        adapter = new RecyclerAdapter(items);
+        adapter = new RecyclerAdapter(items, this);
         recycler.setAdapter(adapter);
 
         setRecyclerViewItemTouchListener();
