@@ -172,6 +172,25 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         sql.close();
     }
 
+    static boolean getStateDone(Context context, String label) {
+        int state = 0;
+        //On récupère la bdd
+        TodoDbHelper tdh = new TodoDbHelper(context);
+        SQLiteDatabase sql = tdh.getReadableDatabase();
+
+        //On récupère la ligne en question ici
+        Cursor curs = sql.rawQuery("SELECT done FROM items WHERE label LIKE ?", new String[]{label});
+
+        //On récupère le nombre représentant l'état du switch
+        if(!curs.moveToFirst() && curs.getCount() == 0)
+            Log.d("TodoDBHelper", "Aucun résultat dans la requête label : " + label);
+        int columnIdxNom = curs.getColumnIndex("done");
+        state = curs.getInt(columnIdxNom);
+
+        curs.close();
+        return state == 1;
+    }
+
     static void addItem(TodoItem item, Context context) {
         TodoDbHelper dbHelper = new TodoDbHelper(context);
 

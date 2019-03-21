@@ -76,6 +76,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
             label = itemView.findViewById(R.id.textView);
             resources = itemView.getResources();
 
+            loadStateSwitch();
             addListenerLongClickItem();
             addListenerClickSwitch();
         }
@@ -88,6 +89,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
                     TodoDbHelper.updateDoneItem(act.getBaseContext(), label.getText().toString(), sw2.isChecked());
                 }
             });
+        }
+
+        public void loadStateSwitch() {
+            //Fonction inutile en fait
+            //this.sw.setChecked(TodoDbHelper.getStateDone(itemView.getContext(), label.getText().toString()));
         }
 
         public void addListenerLongClickItem() {
