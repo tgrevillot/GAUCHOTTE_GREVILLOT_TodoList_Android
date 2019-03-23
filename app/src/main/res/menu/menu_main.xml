@@ -14,4 +14,9 @@
         android:title="@string/vider_la_base"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_showNotif"
+        android:orderInCategory="300"
+        android:title="@string/voir_la_notification"
+        app:showAsAction="never" />
 </menu>

@@ -2,9 +2,16 @@ package si1.gauchotte_grevillot.todolist;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +27,8 @@ import android.widget.TextView;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +37,10 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recycler;
     private LinearLayoutManager manager;
     private RecyclerAdapter adapter;
+
+    //Utile pour les notifications
+    private static String CHANNEL_ID = "channel1";
+    private static int NOTIFICATION_ID = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("INIT", "Fin initialisation composantes");
 
-        // Test d'ajout d'un item
-//        TodoItem item = new TodoItem(TodoItem.Tags.Important, "Réviser ses cours");
-//        TodoDbHelper.addItem(item, getBaseContext());
-//        item = new TodoItem(TodoItem.Tags.Normal, "Acheter du pain");
-//        TodoDbHelper.addItem(item, getBaseContext());
-
         // On récupère les items
         items = TodoDbHelper.getItems(getBaseContext());
         Log.i("INIT", "Fin initialisation items");
@@ -73,7 +80,10 @@ public class MainActivity extends AppCompatActivity {
 
         setRecyclerViewItemTouchListener();
 
+        createNotificationChannel();
         Log.i("INIT", "Fin initialisation recycler");
+
+        launchAlarmNotification();
     }
 
     public void viewAll() {
@@ -82,6 +92,31 @@ public class MainActivity extends AppCompatActivity {
         @SuppressLint("CutPasteId") TextView tv = this.findViewById(R.id.imageView);
     }
 
+    private void createNotificationChannel() {
+        // Créer le NotificationChannel, seulement pour API 26+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "AlarmService channel name";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription("AlarmService channel description");
+            // Enregister le canal sur le système : attention de ne plus rien modifier après
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            Objects.requireNonNull(notificationManager).createNotificationChannel(channel);
+        }
+    }
+
+    public void showNotification(View view, String message) {
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+
+        NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("TodoList")
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        notificationManagerCompat.notify(NOTIFICATION_ID, notifBuilder.build());
+        NOTIFICATION_ID++;
+    }
 
     @SuppressLint("ResourceType")
     @Override
@@ -109,9 +144,26 @@ public class MainActivity extends AppCompatActivity {
                 this.items.clear();
                 this.adapter.notifyDataSetChanged();
                 break;
+            case R.id.action_showNotif:
+                showNotification(recycler, "Test de notification");
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    private void launchAlarmNotification() {
+        Intent myIntent = new Intent(MainActivity.this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), 0, myIntent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                2 * 60 * 1000   , pendingIntent);
     }
 
     private void setRecyclerViewItemTouchListener() {

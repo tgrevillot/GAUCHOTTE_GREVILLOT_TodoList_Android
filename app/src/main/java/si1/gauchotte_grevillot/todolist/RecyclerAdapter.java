@@ -96,7 +96,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
                     LinearLayout ll = itemView.findViewById(R.id.itemLigne);
                     if(ll == null)
                         Log.d("RecyclerAdapter", "LinearLayout null Error");
-                    //if(ll != null)
+                    if(ll != null)
                     if(sw2.isChecked())
                         ll.setBackgroundColor(Color.GREEN);
                     else
