@@ -81,6 +81,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
             addListenerClickSwitch();
         }
 
+        public String getLabel() {
+            return this.label.getText().toString();
+        }
+
         public void addListenerClickSwitch() {
             this.sw.setOnClickListener(new View.OnClickListener() {
                 @Override

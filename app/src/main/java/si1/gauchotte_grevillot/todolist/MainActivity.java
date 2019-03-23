@@ -1,10 +1,10 @@
 package si1.gauchotte_grevillot.todolist;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,10 +15,9 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import java.util.ArrayList;
 
@@ -37,10 +36,10 @@ public class MainActivity extends AppCompatActivity {
 
         this.tdh = new TodoDbHelper(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("INIT", "Fin initialisation items");
 
         // On initialise le RecyclerView
-        recycler = (RecyclerView) findViewById(R.id.recycler);
+        recycler = findViewById(R.id.recycler);
         manager = new LinearLayoutManager(this);
         recycler.setLayoutManager(manager);
 
@@ -131,9 +130,11 @@ public class MainActivity extends AppCompatActivity {
                 switch(swipeDir) {
                     case ItemTouchHelper.RIGHT:
                         item.setDone(true);
-                        break;
+                        TodoDbHelper.updateDoneItem(recycler.getContext(), ((RecyclerAdapter.TodoHolder) viewHolder).getLabel(), true);
+                    break;
                     case ItemTouchHelper.LEFT:
                         item.setDone(false);
+                        TodoDbHelper.updateDoneItem(recycler.getContext(), ((RecyclerAdapter.TodoHolder) viewHolder).getLabel(), false);
                         break;
                 }
                 recycler.getAdapter().notifyItemChanged(position);
