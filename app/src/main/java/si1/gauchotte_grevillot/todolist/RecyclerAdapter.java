@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,6 +87,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
                 public void onClick(View v) {
                     Switch sw2 = v.findViewById(R.id.switch1);
                     TodoDbHelper.updateDoneItem(act.getBaseContext(), label.getText().toString(), sw2.isChecked());
+
+                    //Changement de la couleur du Background lors du clic sur le switch
+                    LinearLayout ll = itemView.findViewById(R.id.itemLigne);
+                    if(ll == null)
+                        Log.d("RecyclerAdapter", "LinearLayout null Error");
+                    //if(ll != null)
+                    if(sw2.isChecked())
+                        ll.setBackgroundColor(Color.GREEN);
+                    else
+                        ll.setBackgroundColor(Color.WHITE);
                 }
             });
         }
