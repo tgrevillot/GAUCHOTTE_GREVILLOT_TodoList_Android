@@ -7,9 +7,13 @@ import android.database.MatrixCursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by phil on 11/02/17.
@@ -23,7 +27,8 @@ public class TodoDbHelper extends SQLiteOpenHelper {
                     TodoContract.TodoEntry._ID + " INTEGER PRIMARY KEY," +
                     TodoContract.TodoEntry.COLUMN_NAME_LABEL + " TEXT," +
                     TodoContract.TodoEntry.COLUMN_NAME_TAG + " TEXT,"  +
-                    TodoContract.TodoEntry.COLUMN_NAME_DONE +  " INTEGER)";
+                    TodoContract.TodoEntry.COLUMN_NAME_DONE +  " INTEGER," +
+                    TodoContract.TodoEntry.COLUMN_NAME_DATE + " DATE)";
 
     public TodoDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -62,7 +67,8 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         String[] projection = {
                 TodoContract.TodoEntry.COLUMN_NAME_LABEL,
                 TodoContract.TodoEntry.COLUMN_NAME_TAG,
-                TodoContract.TodoEntry.COLUMN_NAME_DONE
+                TodoContract.TodoEntry.COLUMN_NAME_DONE,
+                TodoContract.TodoEntry.COLUMN_NAME_DATE
         };
 
         String condition = "label like '" + label + "'";
@@ -83,7 +89,16 @@ public class TodoDbHelper extends SQLiteOpenHelper {
             String l = cursor.getString(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_LABEL));
             TodoItem.Tags tag = TodoItem.getTagFor(cursor.getString(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_TAG)));
             boolean done = (cursor.getInt(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_DONE)) == 1);
-            TodoItem item = new TodoItem(l, tag, done);
+
+            Date dateTime = null;
+            try{
+               SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy' 'HH:mm");
+               dateTime = format.parse(cursor.getString(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_DATE)));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            TodoItem item = new TodoItem(l, tag, done, dateTime);
             items.add(item);
         }
 
@@ -110,7 +125,8 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         String[] projection = {
                 TodoContract.TodoEntry.COLUMN_NAME_LABEL,
                 TodoContract.TodoEntry.COLUMN_NAME_TAG,
-                TodoContract.TodoEntry.COLUMN_NAME_DONE
+                TodoContract.TodoEntry.COLUMN_NAME_DONE,
+                TodoContract.TodoEntry.COLUMN_NAME_DATE
         };
 
         // Requête
@@ -131,7 +147,16 @@ public class TodoDbHelper extends SQLiteOpenHelper {
             String label = cursor.getString(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_LABEL));
             TodoItem.Tags tag = TodoItem.getTagFor(cursor.getString(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_TAG)));
             boolean done = (cursor.getInt(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_DONE)) == 1);
-            TodoItem item = new TodoItem(label, tag, done);
+
+            Date dateTime = null;
+            try{
+                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy' 'HH:mm");
+                dateTime = format.parse(cursor.getString(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_DATE)));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            TodoItem item = new TodoItem(label, tag, done, dateTime);
             items.add(item);
         }
 
@@ -147,12 +172,13 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM items");
     }
 
-    public boolean insertData(String label, String tag, String done) {
+    public boolean insertData(String label, String tag, String done, Date date) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentVal = new ContentValues();
         contentVal.put(TodoContract.TodoEntry.COLUMN_NAME_LABEL, label);
         contentVal.put(TodoContract.TodoEntry.COLUMN_NAME_TAG, tag);
         contentVal.put(TodoContract.TodoEntry.COLUMN_NAME_DONE, done);
+        contentVal.put(TodoContract.TodoEntry.COLUMN_NAME_DATE, date.toString());
 
         long result = db.insert(TodoContract.TodoEntry.TABLE_NAME, null, contentVal);
         return result == -1;
@@ -175,6 +201,16 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         values.put(TodoContract.TodoEntry.COLUMN_NAME_LABEL, item.getLabel());
         values.put(TodoContract.TodoEntry.COLUMN_NAME_TAG, item.getTag().getDesc());
         values.put(TodoContract.TodoEntry.COLUMN_NAME_DONE, item.isDone());
+
+        String dateTime = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy' 'HH:mm");
+        dateFormat.setLenient(false);
+        try {
+            dateTime = dateFormat.format(item.getDate());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        values.put(TodoContract.TodoEntry.COLUMN_NAME_DATE, dateTime);
 
         // Enregistrement
         long newRowId = db.insert(TodoContract.TodoEntry.TABLE_NAME, null, values);

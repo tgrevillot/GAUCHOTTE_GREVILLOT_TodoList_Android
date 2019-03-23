@@ -8,8 +8,7 @@
     android:layout_height="wrap_content"
     android:id="@+id/itemLigne">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal" android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -18,24 +17,45 @@
             android:layout_height="10dp"
             android:background="@android:color/holo_green_dark"
             android:id="@+id/imageView"
+            android:layout_alignParentLeft="true"
             />
 
         <Switch
+            android:id="@+id/switch1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/switch1"
-            android:layout_weight="1" />
-    </LinearLayout>
+            android:layout_alignParentRight="true"/>
 
-    <TextView
-        android:text="TextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:id="@+id/textView" />
+        <TextView
+            android:id="@+id/dateTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="10dp"
+            android:text="Date d'échéance"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/switch1"
+            android:layout_marginTop="5dp"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorPrimaryDark" />
+        <TextView
+            android:text="Nom de la tâche"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView"
+            android:textSize="15dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/imageView"
+            android:layout_toLeftOf="@+id/dateTime"
+            android:layout_marginTop="15dp"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimaryDark"
+            android:layout_below="@+id/textView"
+            android:layout_marginTop="5dp"/>
+
+    </RelativeLayout>
+
 </LinearLayout>

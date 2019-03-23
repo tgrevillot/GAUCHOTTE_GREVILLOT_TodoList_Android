@@ -1,5 +1,7 @@
 package si1.gauchotte_grevillot.todolist;
 
+import java.util.Date;
+
 /**
  * Created by phil on 06/02/17.
  */
@@ -22,17 +24,26 @@ public class TodoItem {
     private String label;
     private Tags tag;
     private boolean done;
+    private Date date;
 
-    public TodoItem(Tags tag, String label) {
-        this.tag = tag;
+    public TodoItem(String label, Tags tag, Date date) {
         this.label = label;
+        this.tag = tag;
+        this.date = date;
         this.done = false;
     }
 
-    public TodoItem(String label, Tags tag, boolean done) {
+    /*public TodoItem(Tags tag, String label) {
+        this.tag = tag;
+        this.label = label;
+        this.done = false;
+    }*/
+
+    public TodoItem(String label, Tags tag, boolean done, Date date) {
         this.label = label;
         this.tag = tag;
         this.done = done;
+        this.date = date;
     }
 
     public static Tags getTagFor(String desc) {
@@ -56,6 +67,10 @@ public class TodoItem {
         return done;
     }
 
+    public Date getDate() {
+        return date;
+    }
+
     public void setDone(boolean done) {
         this.done = done;
     }
@@ -66,5 +81,9 @@ public class TodoItem {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

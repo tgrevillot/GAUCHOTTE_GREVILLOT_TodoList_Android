@@ -17,6 +17,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -54,6 +55,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
         holder.image.setBackgroundColor(c);
         holder.label.setText(item.getLabel());
         holder.sw.setChecked(item.isDone());
+
+        String dateTime = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy' 'HH:mm");
+        dateFormat.setLenient(false);
+        try {
+            dateTime = dateFormat.format(item.getDate());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        holder.dateTime.setText(dateTime);
     }
 
     @Override
@@ -66,8 +78,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
         private Resources resources;
         private ImageView image;
         private Switch sw;
-        private TextView label;
-        private TodoItem item;
+        private TextView label, dateTime;
 
         public TodoHolder(View itemView, Activity a) {
             super(itemView);
@@ -76,6 +87,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
             image = itemView.findViewById(R.id.imageView);
             sw = itemView.findViewById(R.id.switch1);
             label = itemView.findViewById(R.id.textView);
+            dateTime = itemView.findViewById(R.id.dateTime);
             resources = itemView.getResources();
 
             //Affectation du listener sur les différentes row
@@ -106,7 +118,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
 
         public void bindTodo(TodoItem todo) {
             label.setText(todo.getLabel());
+            dateTime.setText(todo.getDate().toString());
             sw.setChecked(todo.isDone());
+
             switch(todo.getTag()) {
                 case Faible:
                     image.setBackgroundColor(resources.getColor(R.color.faible));

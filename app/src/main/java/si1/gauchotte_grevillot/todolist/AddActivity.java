@@ -3,7 +3,6 @@ package si1.gauchotte_grevillot.todolist;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -12,12 +11,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class AddActivity extends AppCompatActivity {
         private Button bValide, bRetour, date, time;
@@ -49,11 +50,27 @@ public class AddActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 String nomTache = ((TextView) findViewById(R.id.nomTache)).getText().toString();
+                String dateT = ((TextView) findViewById(R.id.date)).getText().toString();
+                String timeT = ((TextView) findViewById(R.id.time)).getText().toString();
 
                 if(nomTache.isEmpty()){
                     Snackbar.make(v, "Vous devez entrer un nom de tâche !", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
+                } else if((dateT.isEmpty()) || (timeT.isEmpty())){
+                    Snackbar.make(v, "Vous devez entrer une date et une heure pour la tâche !", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
                 } else{
+
+                    Date dateTime = null;
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy' 'HH:mm");
+                    dateFormat.setLenient(false);
+                    try {
+                        dateTime = dateFormat.parse(dateT + " " + timeT);
+                    } catch (Exception e) {
+                        Snackbar.make(v, "Le format de la date ou de l'heure n'est pas correct !", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
+
                     int item = ((RadioGroup) findViewById(R.id.importanceGroup)).getCheckedRadioButtonId();
                     TodoItem.Tags tag = TodoItem.Tags.Normal;
 
@@ -64,7 +81,7 @@ public class AddActivity extends AppCompatActivity {
                     else
                         tag = TodoItem.Tags.Important;
 
-                    TodoItem todoItem = new TodoItem(tag, nomTache);
+                    TodoItem todoItem = new TodoItem(nomTache, tag, dateTime);
                     // Vérifie si la tâche existe déjà :
                     if(!TodoDbHelper.isIntTable(getBaseContext(), nomTache)){
                         TodoDbHelper.addItem(todoItem, getBaseContext());
@@ -114,7 +131,7 @@ class date_timeListener implements View.OnClickListener{
                         public void onDateSet(DatePicker view, int year,
                                               int monthOfYear, int dayOfMonth) {
 
-                            txtDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                            txtDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
 
                         }
                     }, mYear, mMonth, mDay);
