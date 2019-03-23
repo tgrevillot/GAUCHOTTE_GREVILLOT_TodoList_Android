@@ -6,8 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -90,6 +89,35 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
             dateTime = itemView.findViewById(R.id.dateTime);
             resources = itemView.getResources();
 
+            addListenerLongClickItem();
+            addListenerClickSwitch();
+        }
+
+        public String getLabel() {
+            return this.label.getText().toString();
+        }
+
+        public void addListenerClickSwitch() {
+            this.sw.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Switch sw2 = v.findViewById(R.id.switch1);
+                    TodoDbHelper.updateDoneItem(act.getBaseContext(), label.getText().toString(), sw2.isChecked());
+
+                    //Changement de la couleur du Background lors du clic sur le switch
+                    LinearLayout ll = itemView.findViewById(R.id.itemLigne);
+                    if(ll == null)
+                        Log.d("RecyclerAdapter", "LinearLayout null Error");
+                    if(ll != null)
+                    if(sw2.isChecked())
+                        ll.setBackgroundColor(Color.GREEN);
+                    else
+                        ll.setBackgroundColor(Color.WHITE);
+                }
+            });
+        }
+
+        public void addListenerLongClickItem() {
             //Affectation du listener sur les différentes row
             LinearLayout rowItem = itemView.findViewById(R.id.itemLigne);
             rowItem.setOnLongClickListener(new View.OnLongClickListener() {

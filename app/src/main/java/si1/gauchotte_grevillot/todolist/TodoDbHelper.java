@@ -46,12 +46,6 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    /*public static void removeItem(Context context, TodoItem ti) {
-        TodoDbHelper tdh = new TodoDbHelper(context);
-        SQLiteDatabase sql = tdh.getWritableDatabase();
-        sql.execSQL("DELETE FROM items WHERE label = " + ti.getLabel());
-    }*/
-
     public static void removeItem(Context context, String label) {
         TodoDbHelper tdh = new TodoDbHelper(context);
         SQLiteDatabase sql = tdh.getReadableDatabase();
@@ -188,6 +182,20 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase sql = this.getWritableDatabase();
         Cursor result =  sql.rawQuery("SELECT * FROM " + TodoContract.TodoEntry.TABLE_NAME, null);
         return result;
+    }
+
+    static void updateDoneItem(Context context, String label, boolean state) {
+        TodoDbHelper tdh = new TodoDbHelper(context);
+
+        //Récupération de la base en mode écriture
+        SQLiteDatabase sql = tdh.getWritableDatabase();
+        int etat = 0;
+        if(state)
+            etat = 1;
+
+       //Update de la ligne correspondante
+        sql.execSQL("UPDATE items SET done = " + etat + " WHERE label = '" + label + "'");
+        sql.close();
     }
 
     static void addItem(TodoItem item, Context context) {
