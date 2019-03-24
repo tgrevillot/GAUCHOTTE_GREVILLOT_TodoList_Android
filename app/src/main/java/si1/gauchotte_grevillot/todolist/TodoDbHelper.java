@@ -46,26 +46,27 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public static void removeItem(Context context, String label) {
+    public static void removeItem(Context context, long id) {
         TodoDbHelper tdh = new TodoDbHelper(context);
         SQLiteDatabase sql = tdh.getReadableDatabase();
-        sql.execSQL("DELETE FROM items WHERE label like '" + label + "'");
+        sql.execSQL("DELETE FROM items WHERE " + TodoContract.TodoEntry._ID + " = '" + id + "'");
         tdh.close();
     }
 
-    static ArrayList<TodoItem> getItem(Context context, String label){
+    static ArrayList<TodoItem> getItem(Context context, long id){
         TodoDbHelper tdh = new TodoDbHelper(context);
         SQLiteDatabase sql = tdh.getReadableDatabase();
 
         // Création de la projection souhaitée
         String[] projection = {
+                TodoContract.TodoEntry._ID,
                 TodoContract.TodoEntry.COLUMN_NAME_LABEL,
                 TodoContract.TodoEntry.COLUMN_NAME_TAG,
                 TodoContract.TodoEntry.COLUMN_NAME_DONE,
                 TodoContract.TodoEntry.COLUMN_NAME_DATE
         };
 
-        String condition = "label like '" + label + "'";
+        String condition = TodoContract.TodoEntry._ID + " = '" + id + "'";
 
         Cursor cursor = sql.query(
                 TodoContract.TodoEntry.TABLE_NAME,
@@ -92,7 +93,7 @@ public class TodoDbHelper extends SQLiteOpenHelper {
                 e.printStackTrace();
             }
 
-            TodoItem item = new TodoItem(l, tag, done, dateTime);
+            TodoItem item = new TodoItem(id, l, tag, done, dateTime);
             items.add(item);
         }
 
@@ -103,11 +104,11 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         return items;
     }
 
-    static boolean isIntTable(Context context, String label){
+    /*static boolean isIntTable(Context context, String label){
         ArrayList<TodoItem> items = getItem(context, label);
 
         return (items.size() != 0);
-    }
+    }*/
 
     static ArrayList<TodoItem> getItems(Context context) {
         TodoDbHelper dbHelper = new TodoDbHelper(context);
@@ -117,6 +118,7 @@ public class TodoDbHelper extends SQLiteOpenHelper {
 
         // Création de la projection souhaitée
         String[] projection = {
+                TodoContract.TodoEntry._ID,
                 TodoContract.TodoEntry.COLUMN_NAME_LABEL,
                 TodoContract.TodoEntry.COLUMN_NAME_TAG,
                 TodoContract.TodoEntry.COLUMN_NAME_DONE,
@@ -138,6 +140,7 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         ArrayList<TodoItem> items = new ArrayList<TodoItem>();
 
         while (cursor.moveToNext()) {
+            long numId = Long.parseLong(cursor.getString(cursor.getColumnIndex(TodoContract.TodoEntry._ID)));
             String label = cursor.getString(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_LABEL));
             TodoItem.Tags tag = TodoItem.getTagFor(cursor.getString(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_TAG)));
             boolean done = (cursor.getInt(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_DONE)) == 1);
@@ -150,7 +153,7 @@ public class TodoDbHelper extends SQLiteOpenHelper {
                 e.printStackTrace();
             }
 
-            TodoItem item = new TodoItem(label, tag, done, dateTime);
+            TodoItem item = new TodoItem(numId, label, tag, done, dateTime);
             items.add(item);
         }
 
@@ -166,9 +169,10 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM items");
     }
 
-    public boolean insertData(String label, String tag, String done, Date date) {
+    public boolean insertData(long id, String label, String tag, String done, Date date) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentVal = new ContentValues();
+        contentVal.put(TodoContract.TodoEntry._ID, id);
         contentVal.put(TodoContract.TodoEntry.COLUMN_NAME_LABEL, label);
         contentVal.put(TodoContract.TodoEntry.COLUMN_NAME_TAG, tag);
         contentVal.put(TodoContract.TodoEntry.COLUMN_NAME_DONE, done);
@@ -198,7 +202,7 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         sql.close();
     }
 
-    static void addItem(TodoItem item, Context context) {
+    static long addItem(TodoItem item, Context context) {
         TodoDbHelper dbHelper = new TodoDbHelper(context);
 
         // Récupération de la base
@@ -225,6 +229,8 @@ public class TodoDbHelper extends SQLiteOpenHelper {
 
         // Ménage
         dbHelper.close();
+
+        return newRowId;
     }
 
     public ArrayList<Cursor> getData(String Query){

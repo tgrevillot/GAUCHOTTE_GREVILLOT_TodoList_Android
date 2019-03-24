@@ -14,8 +14,6 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -72,18 +70,24 @@ public class AddActivity extends AppCompatActivity {
                     }
 
                     int item = ((RadioGroup) findViewById(R.id.importanceGroup)).getCheckedRadioButtonId();
-                    TodoItem.Tags tag = TodoItem.Tags.Normal;
+                    TodoItem.Tags tag;
 
                     if(item == R.id.radioImp1)
                         tag = TodoItem.Tags.Faible;
-                    else if(item == R.id.radioImp2)
-                        tag = TodoItem.Tags.Normal;
-                    else
+                    else if(item == R.id.radioImp3)
                         tag = TodoItem.Tags.Important;
+                    else
+                        tag = TodoItem.Tags.Normal;
 
                     TodoItem todoItem = new TodoItem(nomTache, tag, dateTime);
+                    long id = TodoDbHelper.addItem(todoItem, getBaseContext());
+                    todoItem.setId(id);
+                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                    startActivityForResult(intent, 0);
+                    finish();
+
                     // Vérifie si la tâche existe déjà :
-                    if(!TodoDbHelper.isIntTable(getBaseContext(), nomTache)){
+                    /*if(!TodoDbHelper.isIntTable(getBaseContext(), nomTache)){
                         TodoDbHelper.addItem(todoItem, getBaseContext());
 
                         Intent intent = new Intent(getBaseContext(), MainActivity.class);
@@ -92,7 +96,7 @@ public class AddActivity extends AppCompatActivity {
                     } else{
                         Snackbar.make(v, "Votre tâche est déjà existante !", Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
-                    }
+                    }*/
 
                 }
             }

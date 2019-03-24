@@ -53,6 +53,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
 
         holder.image.setBackgroundColor(c);
         holder.label.setText(item.getLabel());
+        holder.id.setText(item.getId() + "");
         holder.sw.setChecked(item.isDone());
 
         String dateTime = null;
@@ -77,7 +78,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
         private Resources resources;
         private ImageView image;
         private Switch sw;
-        private TextView label, dateTime;
+        private TextView label, dateTime, id;
 
         public TodoHolder(View itemView, Activity a) {
             super(itemView);
@@ -87,6 +88,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
             sw = itemView.findViewById(R.id.switch1);
             label = itemView.findViewById(R.id.textView);
             dateTime = itemView.findViewById(R.id.dateTime);
+            id = itemView.findViewById(R.id.id);
             resources = itemView.getResources();
 
             addListenerLongClickItem();
@@ -120,6 +122,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
         public void addListenerLongClickItem() {
             //Affectation du listener sur les différentes row
             LinearLayout rowItem = itemView.findViewById(R.id.itemLigne);
+
             rowItem.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(final View v) {
@@ -130,7 +133,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
                             .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    TodoDbHelper.removeItem(act.getBaseContext(), label.getText().toString());
+                                    TodoDbHelper.removeItem(act.getBaseContext(), Long.parseLong(id.getText().toString()));
                                     Intent intent = new Intent(v.getContext(), MainActivity.class);
                                     act.startActivityForResult(intent, 0);
                                     act.finish();
@@ -148,6 +151,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
             label.setText(todo.getLabel());
             dateTime.setText(todo.getDate().toString());
             sw.setChecked(todo.isDone());
+            id.setText(todo.getId() + "");
 
             switch(todo.getTag()) {
                 case Faible:
