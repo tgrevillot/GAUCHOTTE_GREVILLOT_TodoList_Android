@@ -60,8 +60,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(getBaseContext(), AddActivity.class);
                 startActivityForResult(intent, 0);
                 finish();
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
             }
         });
 
@@ -105,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
             Objects.requireNonNull(notificationManager).createNotificationChannel(channel);
         }
     }
-
     public void showNotification(View view, String message) {
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
 
@@ -152,19 +149,18 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void onStop() {
+        //launchAlarmNotification();
+        super.onStop();
+    }
+
     public void onDestroy() {
         super.onDestroy();
+        launchAlarmNotification();
     }
 
     private void launchAlarmNotification() {
-        Intent myIntent = new Intent(MainActivity.this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), 0, myIntent, 0);
-
-        Calendar calendar = Calendar.getInstance();
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                2 * 60 * 1000   , pendingIntent);
+        startService(new Intent(this, NotificationService.class));
     }
 
     private void setRecyclerViewItemTouchListener() {

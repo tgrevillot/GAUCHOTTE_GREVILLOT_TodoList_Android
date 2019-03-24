@@ -112,7 +112,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
                         Log.d("RecyclerAdapter", "LinearLayout null Error");
                     if(ll != null)
                     if(sw2.isChecked())
-                        ll.setBackgroundColor(Color.GREEN);
+                        ll.setBackgroundColor(Color.GRAY);
                     else
                         ll.setBackgroundColor(Color.WHITE);
                 }
