@@ -1,11 +1,8 @@
 package si1.gauchotte_grevillot.todolist;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +25,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -67,6 +67,17 @@ public class MainActivity extends AppCompatActivity {
 
         // On récupère les items
         items = TodoDbHelper.getItems(getBaseContext());
+        Collections.sort(items, new Comparator<TodoItem>() {
+            @Override
+            public int compare(TodoItem o1, TodoItem o2) {
+                if(o1.getPosition() < o2.getPosition())
+                    return -1;
+                else if(o1.getPosition() == o2.getPosition())
+                    return 0;
+                else
+                    return 1;
+            }
+        });
         Log.i("INIT", "Fin initialisation items");
 
         // On initialise le RecyclerView
@@ -164,11 +175,47 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setRecyclerViewItemTouchListener() {
-        ItemTouchHelper.SimpleCallback itemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        ItemTouchHelper.SimpleCallback itemTouchCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder viewHolder1) {
                 // Non géré dans cet exemple (ce sont les drags) -> on retourne false
+                int fromPosition = viewHolder.getAdapterPosition();
+                int toPosition = viewHolder1.getAdapterPosition();
+                itemMove(fromPosition, toPosition);
+                changeItemPosition(fromPosition, toPosition);
                 return false;
+            }
+
+            private void itemMove(int fromPosition, int toPosition) {
+                if(fromPosition < toPosition)
+                    for(int i = fromPosition; i < toPosition; i++)
+                        Collections.swap(items, i, i + 1);
+                else
+                    for(int i = fromPosition; i > toPosition; i--)
+                        Collections.swap(items, i , i - 1);
+
+                adapter.notifyItemMoved(fromPosition, toPosition);
+            }
+
+            private void changeItemPosition(int fromPosition, int toPosition) {
+                TodoItem premierItem = items.get(fromPosition);
+                TodoItem secondeItem = items.get(toPosition);
+
+                //On inverse les deux positions
+                int position1 = premierItem.getPosition();
+                premierItem.setPosition(secondeItem.getPosition());
+                TodoDbHelper.updatePositionOnMove(premierItem, getBaseContext());
+
+                secondeItem.setPosition(position1);
+                TodoDbHelper.updatePositionOnMove(secondeItem, getBaseContext());
+            }
+
+            @Override
+            public int getMovementFlags(RecyclerView recycler, RecyclerView.ViewHolder viewHolder) {
+                int drawFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+                int swipeFlags = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+
+                return makeMovementFlags(drawFlags, swipeFlags);
             }
 
             @Override
@@ -184,6 +231,9 @@ public class MainActivity extends AppCompatActivity {
                     case ItemTouchHelper.LEFT:
                         item.setDone(false);
                         TodoDbHelper.updateDoneItem(recycler.getContext(), ((RecyclerAdapter.TodoHolder) viewHolder).getLabel(), false);
+                        break;
+                    case ItemTouchHelper.DOWN:
+                        Log.d("onSwipe","Oh Djadja je check ça");
                         break;
                 }
                 recycler.getAdapter().notifyItemChanged(position);

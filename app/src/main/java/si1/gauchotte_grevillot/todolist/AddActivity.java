@@ -79,7 +79,7 @@ public class AddActivity extends AppCompatActivity {
                     else
                         tag = TodoItem.Tags.Normal;
 
-                    TodoItem todoItem = new TodoItem(nomTache, tag, dateTime);
+                    TodoItem todoItem = new TodoItem(nomTache, tag, dateTime, TodoDbHelper.getPosition() + 1);
                     long id = TodoDbHelper.addItem(todoItem, getBaseContext());
                     todoItem.setId(id);
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);

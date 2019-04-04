@@ -26,13 +26,15 @@ public class TodoItem {
     private boolean done;
     private Date date;
     private long id;
+    private int position;
 
-    public TodoItem(String label, Tags tag, Date date) {
+    public TodoItem(String label, Tags tag, Date date, int position) {
         this.id = 0;
         this.label = label;
         this.tag = tag;
         this.date = date;
         this.done = false;
+        this.position = position;
     }
 
     /*public TodoItem(Tags tag, String label) {
@@ -41,12 +43,13 @@ public class TodoItem {
         this.done = false;
     }*/
 
-    public TodoItem(long id, String label, Tags tag, boolean done, Date date) {
+    public TodoItem(long id, String label, Tags tag, boolean done, Date date, int position) {
         this.id = id;
         this.label = label;
         this.tag = tag;
         this.done = done;
         this.date = date;
+        this.position = position;
     }
 
     public static Tags getTagFor(String desc) {
@@ -92,6 +95,14 @@ public class TodoItem {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public int getPosition() {
+        return this.position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     public void setId(long id){
