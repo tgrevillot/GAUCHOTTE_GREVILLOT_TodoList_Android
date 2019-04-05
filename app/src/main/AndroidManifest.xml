@@ -31,6 +31,11 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity
+            android:name="si1.gauchotte_grevillot.todolist.ModifActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
         <service android:name=".NotificationService" />
     </application>

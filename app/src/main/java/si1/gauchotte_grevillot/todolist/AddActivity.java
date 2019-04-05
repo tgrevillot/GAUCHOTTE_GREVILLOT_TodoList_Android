@@ -86,18 +86,6 @@ public class AddActivity extends AppCompatActivity {
                     startActivityForResult(intent, 0);
                     finish();
 
-                    // Vérifie si la tâche existe déjà :
-                    /*if(!TodoDbHelper.isIntTable(getBaseContext(), nomTache)){
-                        TodoDbHelper.addItem(todoItem, getBaseContext());
-
-                        Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                        startActivityForResult(intent, 0);
-                        finish();
-                    } else{
-                        Snackbar.make(v, "Votre tâche est déjà existante !", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    }*/
-
                 }
             }
         });

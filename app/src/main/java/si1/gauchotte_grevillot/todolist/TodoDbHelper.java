@@ -188,7 +188,7 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    static void updateDoneItem(Context context, String label, boolean state) {
+    static void updateDoneItem(Context context, long id, boolean state) {
         TodoDbHelper tdh = new TodoDbHelper(context);
 
         //Récupération de la base en mode écriture
@@ -198,7 +198,40 @@ public class TodoDbHelper extends SQLiteOpenHelper {
             etat = 1;
 
        //Update de la ligne correspondante
-        sql.execSQL("UPDATE items SET done = " + etat + " WHERE label = '" + label + "'");
+        sql.execSQL("UPDATE items SET done = " + etat + " WHERE " + TodoContract.TodoEntry._ID + " = '" + id + "'");
+        sql.close();
+    }
+
+    static void updateItem(long id, TodoItem ti, Context cnt){
+        TodoDbHelper tdh = new TodoDbHelper(cnt);
+
+        //Récupération de la base en mode écriture
+        SQLiteDatabase sql = tdh.getWritableDatabase();
+
+        int etat = 0;
+        if(ti.isDone())
+            etat = 1;
+
+        String label = ti.getLabel();
+        String tag = ti.getTag().getDesc();
+        String date = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy' 'HH:mm");
+        dateFormat.setLenient(false);
+        try {
+            date = dateFormat.format(ti.getDate());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //Update de la ligne correspondante
+        ContentValues cv = new ContentValues();
+        cv.put(TodoContract.TodoEntry.COLUMN_NAME_LABEL,label);
+        cv.put(TodoContract.TodoEntry.COLUMN_NAME_DATE,date);
+        cv.put(TodoContract.TodoEntry.COLUMN_NAME_TAG,tag);
+        cv.put(TodoContract.TodoEntry.COLUMN_NAME_DONE,etat);
+
+        sql.update(TodoContract.TodoEntry.TABLE_NAME, cv, "_id="+id, null);
+
         sql.close();
     }
 

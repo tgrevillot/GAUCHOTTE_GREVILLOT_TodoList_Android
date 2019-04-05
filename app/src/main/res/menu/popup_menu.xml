@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="si1.gauchotte_grevillot.todolist.MainActivity">
+
+    <item
+        android:id="@+id/modif"
+        android:orderInCategory="100"
+        android:title="@string/modifier"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/suppr"
+        android:orderInCategory="200"
+        android:title="@string/supprimer"
+        app:showAsAction="never"/>
+
+</menu>

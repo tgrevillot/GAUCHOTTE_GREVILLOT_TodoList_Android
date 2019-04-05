@@ -59,6 +59,7 @@
             android:layout_below="@+id/imageView"
             android:layout_toLeftOf="@+id/dateTime"
             android:layout_marginTop="15dp"
+            android:textStyle="bold"
             />
 
         <View

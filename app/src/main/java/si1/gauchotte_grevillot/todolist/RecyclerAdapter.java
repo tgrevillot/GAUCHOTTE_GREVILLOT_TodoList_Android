@@ -9,19 +9,20 @@ import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-/**
- * Created by phil on 07/02/17.
- */
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHolder> {
 
@@ -42,6 +43,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
     @Override
     public void onBindViewHolder(TodoHolder holder, int i) {
         TodoItem item = items.get(i);
+
         int c = Color.BLACK;
 
         if(item.getTag().equals(TodoItem.Tags.Faible))
@@ -52,6 +54,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
             c = Color.RED;
 
         holder.image.setBackgroundColor(c);
+        holder.image.setTag(item.getTag());
         holder.label.setText(item.getLabel());
         holder.id.setText(item.getId() + "");
         holder.sw.setChecked(item.isDone());
@@ -73,15 +76,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
         return items.size();
     }
 
+
     public static class TodoHolder extends RecyclerView.ViewHolder {
         private Activity act;
         private Resources resources;
         private ImageView image;
         private Switch sw;
         private TextView label, dateTime, id;
+        private View view;
 
         public TodoHolder(View itemView, Activity a) {
             super(itemView);
+
+            view = itemView;
 
             act = a;
             image = itemView.findViewById(R.id.imageView);
@@ -93,6 +100,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
 
             addListenerLongClickItem();
             addListenerClickSwitch();
+            addListenerClickItem();
         }
 
         public String getLabel() {
@@ -104,7 +112,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
                 @Override
                 public void onClick(View v) {
                     Switch sw2 = v.findViewById(R.id.switch1);
-                    TodoDbHelper.updateDoneItem(act.getBaseContext(), label.getText().toString(), sw2.isChecked());
+                    TodoDbHelper.updateDoneItem(act.getBaseContext(), Long.parseLong(id.getText().toString()), sw2.isChecked());
 
                     //Changement de la couleur du Background lors du clic sur le switch
                     LinearLayout ll = itemView.findViewById(R.id.itemLigne);
@@ -120,29 +128,61 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.TodoHo
         }
 
         public void addListenerLongClickItem() {
-            //Affectation du listener sur les différentes row
-            LinearLayout rowItem = itemView.findViewById(R.id.itemLigne);
 
-            rowItem.setOnLongClickListener(new View.OnLongClickListener() {
+        }
+
+        public void addListenerClickItem(){
+            this.view.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onLongClick(final View v) {
-                    new AlertDialog.Builder(v.getContext())
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setMessage("Êtes-vous sûr de vouloir supprimer cet item ?")
-                            .setTitle("Suppression d'item")
-                            .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    TodoDbHelper.removeItem(act.getBaseContext(), Long.parseLong(id.getText().toString()));
-                                    Intent intent = new Intent(v.getContext(), MainActivity.class);
-                                    act.startActivityForResult(intent, 0);
-                                    act.finish();
-                                }
-                            })
-                            .setNegativeButton("Non", null)
-                            .show();
+                public void onClick(View v) {
+                    PopupMenu popup = new PopupMenu(v.getContext(), v);
+                    popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
 
-                    return true;
+                            switch(item.getItemId()){
+                                case(R.id.modif):
+                                    Intent intent = new Intent(act.getBaseContext(), ModifActivity.class);
+                                    intent.putExtra("date", dateTime.getText().toString().split(" ")[0]);
+                                    intent.putExtra("time", dateTime.getText().toString().split(" ")[1]);
+                                    intent.putExtra("tache", label.getText().toString());
+                                    intent.putExtra("id", id.getText().toString());
+
+                                    String tag = TodoItem.Tags.Normal.getDesc();
+                                    if(image.getTag().equals(TodoItem.Tags.Faible))
+                                        tag = TodoItem.Tags.Faible.getDesc();
+                                    else if(image.getTag().equals(TodoItem.Tags.Important))
+                                        tag = TodoItem.Tags.Important.getDesc();
+
+                                    intent.putExtra("importance", tag);
+                                    act.startActivityForResult(intent, 0);
+                                    break;
+
+                                case(R.id.suppr):
+                                    new AlertDialog.Builder(view.getContext())
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .setMessage("Êtes-vous sûr de vouloir supprimer cet item ?")
+                                            .setTitle("Suppression d'item")
+                                            .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    TodoDbHelper.removeItem(act.getBaseContext(), Long.parseLong(id.getText().toString()));
+                                                    Intent intent = new Intent(view.getContext(), MainActivity.class);
+                                                    act.startActivityForResult(intent, 0);
+                                                    act.finish();
+                                                }
+                                            })
+                                            .setNegativeButton("Non", null)
+                                            .show();
+
+                                    break;
+                            }
+
+                            return true;
+                        }
+                    });
+
+                    popup.show();
                 }
             });
         }

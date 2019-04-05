@@ -22,8 +22,10 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
@@ -179,11 +181,11 @@ public class MainActivity extends AppCompatActivity {
                 switch(swipeDir) {
                     case ItemTouchHelper.RIGHT:
                         item.setDone(true);
-                        TodoDbHelper.updateDoneItem(recycler.getContext(), ((RecyclerAdapter.TodoHolder) viewHolder).getLabel(), true);
+                        TodoDbHelper.updateDoneItem(recycler.getContext(), ((RecyclerAdapter.TodoHolder) viewHolder).getItemId(), true);
                     break;
                     case ItemTouchHelper.LEFT:
                         item.setDone(false);
-                        TodoDbHelper.updateDoneItem(recycler.getContext(), ((RecyclerAdapter.TodoHolder) viewHolder).getLabel(), false);
+                        TodoDbHelper.updateDoneItem(recycler.getContext(), ((RecyclerAdapter.TodoHolder) viewHolder).getItemId(), false);
                         break;
                 }
                 recycler.getAdapter().notifyItemChanged(position);

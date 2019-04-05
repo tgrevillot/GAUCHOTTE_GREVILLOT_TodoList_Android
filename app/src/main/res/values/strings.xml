@@ -3,4 +3,6 @@
     <string name="action_settings">Settings</string>
     <string name="vider_la_base">Vider la base</string>
     <string name="voir_la_notification">Voir la notification</string>
+    <string name="modifier">Modifier</string>
+    <string name="supprimer">Supprimer</string>
 </resources>
