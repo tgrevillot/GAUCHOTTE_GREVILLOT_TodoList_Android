@@ -11,6 +11,7 @@ import android.util.Log;
 import java.util.Timer;
 import java.util.TimerTask;
 
+//Merci à cette page : https://stackoverflow.com/questions/39674850/send-a-notification-when-the-app-is-closed
 public class NotificationService extends Service {
 
     Timer timer;
@@ -37,12 +38,9 @@ public class NotificationService extends Service {
         return START_STICKY;
     }
 
-
     @Override
     public void onCreate() {
         Log.e(TAG, "onCreate");
-
-
     }
 
     @Override
@@ -50,13 +48,10 @@ public class NotificationService extends Service {
         Log.e(TAG, "onDestroy");
         stoptimertask();
         super.onDestroy();
-
-
     }
 
     //we are going to use a handler to be able to run in our TimerTask
     final Handler handler = new Handler();
-
 
     public void startTimer() {
         //set a new Timer
@@ -92,7 +87,6 @@ public class NotificationService extends Service {
 
 
     public void initializeTimerTask() {
-
         timerTask = new TimerTask() {
             public void run() {
 

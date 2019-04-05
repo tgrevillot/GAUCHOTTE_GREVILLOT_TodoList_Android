@@ -20,7 +20,8 @@ import java.util.Date;
  */
 
 public class TodoDbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
+    private static int COMPTEURPOSITION = 0;
     public static final String DATABASE_NAME = "todo.db";
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + TodoContract.TodoEntry.TABLE_NAME + " (" +
@@ -28,7 +29,8 @@ public class TodoDbHelper extends SQLiteOpenHelper {
                     TodoContract.TodoEntry.COLUMN_NAME_LABEL + " TEXT," +
                     TodoContract.TodoEntry.COLUMN_NAME_TAG + " TEXT,"  +
                     TodoContract.TodoEntry.COLUMN_NAME_DONE +  " INTEGER," +
-                    TodoContract.TodoEntry.COLUMN_NAME_DATE + " DATE)";
+                    TodoContract.TodoEntry.COLUMN_NAME_DATE + " DATE," +
+                    TodoContract.TodoEntry.COLUMN_NAME_POSITION + " INTEGER)";
 
     public TodoDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -53,6 +55,14 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         tdh.close();
     }
 
+    static void updatePositionOnMove(TodoItem item, Context context) {
+        TodoDbHelper tdh = new TodoDbHelper(context);
+        SQLiteDatabase sql = tdh.getWritableDatabase();
+
+        sql.execSQL("UPDATE items SET position = " + item.getPosition() + " WHERE _id = " + item.getId());
+        tdh.close();
+    }
+
     static ArrayList<TodoItem> getItem(Context context, long id){
         TodoDbHelper tdh = new TodoDbHelper(context);
         SQLiteDatabase sql = tdh.getReadableDatabase();
@@ -63,7 +73,8 @@ public class TodoDbHelper extends SQLiteOpenHelper {
                 TodoContract.TodoEntry.COLUMN_NAME_LABEL,
                 TodoContract.TodoEntry.COLUMN_NAME_TAG,
                 TodoContract.TodoEntry.COLUMN_NAME_DONE,
-                TodoContract.TodoEntry.COLUMN_NAME_DATE
+                TodoContract.TodoEntry.COLUMN_NAME_DATE,
+                TodoContract.TodoEntry.COLUMN_NAME_POSITION
         };
 
         String condition = TodoContract.TodoEntry._ID + " = '" + id + "'";
@@ -84,7 +95,7 @@ public class TodoDbHelper extends SQLiteOpenHelper {
             String l = cursor.getString(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_LABEL));
             TodoItem.Tags tag = TodoItem.getTagFor(cursor.getString(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_TAG)));
             boolean done = (cursor.getInt(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_DONE)) == 1);
-
+            int position = Integer.parseInt(cursor.getString(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_POSITION)));
             Date dateTime = null;
             try{
                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy' 'HH:mm");
@@ -93,7 +104,7 @@ public class TodoDbHelper extends SQLiteOpenHelper {
                 e.printStackTrace();
             }
 
-            TodoItem item = new TodoItem(id, l, tag, done, dateTime);
+            TodoItem item = new TodoItem(id, l, tag, done, dateTime, position);
             items.add(item);
         }
 
@@ -103,12 +114,6 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         // Retourne le résultat
         return items;
     }
-
-    /*static boolean isIntTable(Context context, String label){
-        ArrayList<TodoItem> items = getItem(context, label);
-
-        return (items.size() != 0);
-    }*/
 
     static ArrayList<TodoItem> getItems(Context context) {
         TodoDbHelper dbHelper = new TodoDbHelper(context);
@@ -122,7 +127,8 @@ public class TodoDbHelper extends SQLiteOpenHelper {
                 TodoContract.TodoEntry.COLUMN_NAME_LABEL,
                 TodoContract.TodoEntry.COLUMN_NAME_TAG,
                 TodoContract.TodoEntry.COLUMN_NAME_DONE,
-                TodoContract.TodoEntry.COLUMN_NAME_DATE
+                TodoContract.TodoEntry.COLUMN_NAME_DATE,
+                TodoContract.TodoEntry.COLUMN_NAME_POSITION
         };
 
         // Requête
@@ -133,7 +139,7 @@ public class TodoDbHelper extends SQLiteOpenHelper {
                 null,
                 null,
                 null,
-                null
+                "position"
         );
 
         // Exploitation des résultats
@@ -144,6 +150,7 @@ public class TodoDbHelper extends SQLiteOpenHelper {
             String label = cursor.getString(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_LABEL));
             TodoItem.Tags tag = TodoItem.getTagFor(cursor.getString(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_TAG)));
             boolean done = (cursor.getInt(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_DONE)) == 1);
+            int position = Integer.parseInt(cursor.getString(cursor.getColumnIndex(TodoContract.TodoEntry.COLUMN_NAME_POSITION)));
 
             Date dateTime = null;
             try{
@@ -153,7 +160,7 @@ public class TodoDbHelper extends SQLiteOpenHelper {
                 e.printStackTrace();
             }
 
-            TodoItem item = new TodoItem(numId, label, tag, done, dateTime);
+            TodoItem item = new TodoItem(numId, label, tag, done, dateTime, position);
             items.add(item);
         }
 
@@ -246,6 +253,7 @@ public class TodoDbHelper extends SQLiteOpenHelper {
         values.put(TodoContract.TodoEntry.COLUMN_NAME_LABEL, item.getLabel());
         values.put(TodoContract.TodoEntry.COLUMN_NAME_TAG, item.getTag().getDesc());
         values.put(TodoContract.TodoEntry.COLUMN_NAME_DONE, item.isDone());
+        values.put(TodoContract.TodoEntry.COLUMN_NAME_POSITION, ++TodoDbHelper.COMPTEURPOSITION);
 
         String dateTime = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy' 'HH:mm");
@@ -308,5 +316,9 @@ public class TodoDbHelper extends SQLiteOpenHelper {
             alc.set(1,Cursor2);
             return alc;
         }
+    }
+
+    public static int getPosition() {
+        return COMPTEURPOSITION;
     }
 }
